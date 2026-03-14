@@ -3,7 +3,7 @@ import json
 import webbrowser
 import threading
 
-PORT = 8080
+PORT = 80800
 
 HTML = """<!DOCTYPE html>
 <html>
