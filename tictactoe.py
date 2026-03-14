@@ -78,7 +78,6 @@ HTML = """<!DOCTYPE html>
   <button id="reset" onclick="resetGame()">New Game</button>
 <script>
   const SIZE = 4;
-  const WIN = 4;
   let board = Array(SIZE*SIZE).fill('');
   let current = 'X';
   let gameOver = false;
