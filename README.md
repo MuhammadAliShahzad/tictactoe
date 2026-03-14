@@ -25,3 +25,5 @@ The game will automatically open in your browser at `http://localhost:8080`. Pre
 ## How It Works
 
 The app uses Python's built-in `http.server` module to serve a self-contained HTML/CSS/JS game — no external libraries or frameworks needed.
+
+We made  some changes
