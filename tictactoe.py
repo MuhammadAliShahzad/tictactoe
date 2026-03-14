@@ -30,16 +30,16 @@ HTML = """<!DOCTYPE html>
   }
   .board {
     display: grid;
-    grid-template-columns: repeat(3, 120px);
-    grid-template-rows: repeat(3, 120px);
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
     gap: 6px;
     background: rgba(255,255,255,0.15);
     padding: 6px;
     border-radius: 12px;
   }
   .cell {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     background: rgba(255,255,255,0.9);
     border: none;
     border-radius: 8px;
@@ -77,14 +77,20 @@ HTML = """<!DOCTYPE html>
   <div class="board" id="board"></div>
   <button id="reset" onclick="resetGame()">New Game</button>
 <script>
-  let board = Array(9).fill('');
+  const SIZE = 4;
+  let board = Array(SIZE*SIZE).fill('');
   let current = 'X';
   let gameOver = false;
-  const lines = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
+  const lines = (() => {
+    const l = [];
+    for (let r = 0; r < SIZE; r++)
+      l.push([...Array(SIZE)].map((_,c) => r*SIZE+c));
+    for (let c = 0; c < SIZE; c++)
+      l.push([...Array(SIZE)].map((_,r) => r*SIZE+c));
+    l.push([...Array(SIZE)].map((_,i) => i*SIZE+i));
+    l.push([...Array(SIZE)].map((_,i) => i*SIZE+(SIZE-1-i)));
+    return l;
+  })();
   const boardEl = document.getElementById('board');
   const statusEl = document.getElementById('status');
 
@@ -107,9 +113,9 @@ HTML = """<!DOCTYPE html>
       gameOver = true;
       statusEl.textContent = `Player ${winner} wins!`;
       render();
-      winner && lines.forEach(([a,b,c]) => {
-        if (board[a] && board[a]===board[b] && board[b]===board[c]) {
-          [a,b,c].forEach(idx => boardEl.children[idx].classList.add('win'));
+      lines.forEach(cells => {
+        if (cells.every(idx => board[idx] && board[idx] === board[cells[0]])) {
+          cells.forEach(idx => boardEl.children[idx].classList.add('win'));
         }
       });
       return;
@@ -126,14 +132,14 @@ HTML = """<!DOCTYPE html>
   }
 
   function checkWinner() {
-    for (const [a,b,c] of lines) {
-      if (board[a] && board[a]===board[b] && board[b]===board[c]) return board[a];
+    for (const cells of lines) {
+      if (cells.every(idx => board[idx] && board[idx] === board[cells[0]])) return board[cells[0]];
     }
     return null;
   }
 
   function resetGame() {
-    board = Array(9).fill('');
+    board = Array(SIZE*SIZE).fill('');
     current = 'X';
     gameOver = false;
     statusEl.textContent = "Player X's turn";
